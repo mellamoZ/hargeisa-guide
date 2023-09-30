@@ -1,0 +1,56 @@
+<?php
+        ini_set('display_errors', 0);
+
+                if (isset($_POST["submit"])) {
+                    $post_data = file_get_contents('php://input');
+                    $dateone = $_POST["date1"];
+                    $datetwo = $_POST["date2"];
+                    $query = $_POST["query"];
+                };
+                 $sql2 ="SELECT SUM(paidamount) AS total FROM payment";
+                 if($query == "All")
+                 {
+                   $sql2 = $sql2 . " WHERE paiddate BETWEEN  '$dateone' AND '$datetwo'"; 
+                 }elseif($query == "Ticket"){
+                  $sql2 = $sql2 . " WHERE paiddate BETWEEN  '$dateone' AND '$datetwo' AND description = '$query' "; 
+                 }elseif($query == "Prescription"){
+                  $sql2 = $sql2 . " WHERE paiddate BETWEEN  '$dateone' AND '$datetwo' AND description = '$query' "; 
+                 }elseif($query == "Treatment"){
+                  $sql2 = $sql2 . " WHERE paiddate BETWEEN  '$dateone' AND '$datetwo' AND description = '$query' "; 
+                 }else{
+                  $sql2 = $sql2 . " WHERE paiddate BETWEEN  '$dateone' AND '$datetwo' AND description = 'walkin' "; 
+
+                 }
+				        $sqldate2 = mysqli_query($con,$sql2);
+                $rsdate2 = mysqli_fetch_array($sqldate2);
+                 $sql ="SELECT A.paiddate,A.paidamount,A.paidtime, A.description, A.via, B.patientname,B.mobileno FROM payment AS A INNER JOIN patient AS B ON A.patientid = B.patientid ";
+                 if($query == "All")
+                 {
+                   $sql = $sql . " WHERE paiddate BETWEEN '$dateone' AND '$datetwo'"; 
+                 }elseif($query == "Ticket"){
+                   $sql =  $sql . " WHERE paiddate BETWEEN  '$dateone' AND '$datetwo' AND description = '$query' "; 
+                 }elseif($query == "Prescription"){
+                   $sql =  $sql . " WHERE paiddate BETWEEN  '$dateone' AND '$datetwo' AND description = '$query' "; 
+                 }elseif($query == "Treatment"){
+                   $sql =  $sql . " WHERE paiddate BETWEEN  '$dateone' AND '$datetwo' AND description = '$query' "; 
+                 }else{
+                   $sql =  $sql . " WHERE paiddate BETWEEN  '$dateone' AND '$datetwo' AND description = 'walkin' "; 
+
+                 }
+                 $sqldate = mysqli_query($con,$sql);
+                while($rsdate = mysqli_fetch_array($sqldate)){
+                 echo
+                 "<tr><td>" . $rsdate['patientname'] .
+                 "</td><td>" . $rsdate['mobileno'] .
+                 "</td><td>" . $rsdate['paiddate'] .
+                  "</td><td>" . $rsdate['paidtime'] .
+                   "</td><td>" . $rsdate['description'] .
+                   "</td><td>" . $rsdate['via'] .
+                   "</td><td>" . $rsdate['paidamount'] .
+                   "</td><td>" . $rsdate2['total'] .
+                   "</td></tr>";               
+                
+                };
+
+                
+                    ?>
